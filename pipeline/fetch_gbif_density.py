@@ -13,7 +13,7 @@ def get(params):
     url = "https://api.gbif.org/v1/occurrence/search?" + urllib.parse.urlencode(params)
     for i in range(4):
         try:
-            with urllib.request.urlopen(url, timeout=120) as r: return json.load(r)
+            with urllib.request.urlopen(url, timeout=60) as r: return json.load(r)
         except Exception as e: print("retry", e, file=sys.stderr); time.sleep(2*(i+1))
 
 def main():
@@ -23,14 +23,20 @@ def main():
     ix = np.round((bboxes[:,0]-x0)/10000).astype(int); iy = np.round((bboxes[:,1]-y0)/10000).astype(int)
     W, H = ix.max()+1, iy.max()+1
     out = {}
+    only = sys.argv[1:]
     for code, key in SPECIES.items():
-        pts, offset = [], 0
-        while offset < 100000:
-            d = get({"taxonKey": key, "country": "US", "hasCoordinate": "true", "hasGeospatialIssue": "false", "limit": 300, "offset": offset})
-            if not d: break
-            pts += [(o["decimalLongitude"], o["decimalLatitude"]) for o in d["results"]]
-            offset += 300
-            if d.get("endOfRecords"): break
+        if only and code not in only: continue
+        # GBIF's search API stalls at deep offsets, so page within year buckets that each stay small.
+        pts = []
+        for yr in ["*,1949", "1950,1969", "1970,1979", "1980,1999", "2000,2009", "2010,2016", "2017,2020", "2021,2023", "2024,2026"]:
+            offset = 0
+            while offset < 9000:
+                d = get({"taxonKey": key, "country": "US", "hasCoordinate": "true", "hasGeospatialIssue": "false", "year": yr, "limit": 300, "offset": offset})
+                if not d: break
+                pts += [(o["decimalLongitude"], o["decimalLatitude"]) for o in d["results"]]
+                offset += 300
+                if d.get("endOfRecords"): break
+            print(code, yr, len(pts), flush=True)
         xs, ys = transform("EPSG:4326", prj, [p[0] for p in pts], [p[1] for p in pts])
         grid = np.zeros((H, W))
         for x, y in zip(xs, ys):
@@ -44,6 +50,7 @@ def main():
         nz = vals > 0.01
         out[code] = {"n_points": len(pts), "grts": [int(grts[i]) for i in np.where(nz)[0]], "value": [round(float(v),3) for v in vals[nz]]}
         print(code, len(pts), "points ->", int(nz.sum()), "cells", flush=True)
-    json.dump(out, open(os.path.join(RAW, "gbif", "density.json"), "w"))
+    suffix = "_" + "_".join(only) if only else ""
+    json.dump(out, open(os.path.join(RAW, "gbif", f"density{suffix}.json"), "w"))
 
 if __name__ == "__main__": main()

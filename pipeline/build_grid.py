@@ -56,9 +56,10 @@ def main():
 
     # --- GBIF-derived relative density layers for species NABat's summer models do not cover
     density = {}
-    dp = os.path.join(RAW, "gbif", "density.json")
-    if os.path.exists(dp):
-        for code, d in json.load(open(dp)).items():
+    merged = {}
+    for dp in glob.glob(os.path.join(RAW, "gbif", "density*.json")): merged.update(json.load(open(dp)))
+    if merged:
+        for code, d in merged.items():
             arr = np.zeros(n, np.float32)
             for g, v in zip(d["grts"], d["value"]):
                 i = pos.get(int(g))
