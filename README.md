@@ -9,7 +9,7 @@ Student project. Nothing here connects to a real power grid; `/api/schedule` dem
 | Route | What it shows |
 | --- | --- |
 | `/` | National map: every 10 km cell in the lower 48, with lenses for bat activity, Black Corridor priority, light pollution and interstate traffic; month slider; nightly modifiers; species filters; ranked candidate corridors |
-| `/corridors/[id]` | Deep dives for I-35 (TX), I-65 (KY) and US 62/180 (NM): segment-level dimming map, tonight's hourly schedule, annual savings, adjustable policy and energy assumptions |
+| `/corridors/[id]` | Deep dives for I-35 (TX), I-65 (KY), US 62/180 (NM) and I-75 / US 441 at Gainesville (FL): segment-level dimming map, tonight's hourly schedule, annual savings, adjustable policy and energy assumptions |
 | `/utility` | Utility dashboard: savings across pilots, tonight's setpoints, auto-generated public notice, simulated grid feed |
 | `/tonight` | Public page: what the lights near you will do tonight and why, with a live weather forecast |
 | `/methodology` | Model, formulas, limitations and full data provenance |
@@ -53,9 +53,9 @@ Requires Python 3.11+ with `rasterio numpy pyshp shapely pillow`.
 ```bash
 cd pipeline
 python3 fetch_hpms_national.py        # FHWA HPMS 2024 interstates, all states (~20 min)
-python3 fetch_hpms_corridors.py       # full-detail segments for the three corridors
+python3 fetch_hpms_corridors.py       # full-detail segments for the four corridors
 python3 fetch_gbif.py                 # monthly phenology per species per state
-python3 fetch_gbif_density.py         # point density for TABR, LABO, MYSO
+python3 fetch_gbif_density.py         # point density for TABR, LABO, MYSO, NYHU, MYAU (one species per run)
 python3 fetch_gbif_points.py          # sightings inside each corridor
 python3 fetch_climate.py              # ERA5 evening temperatures (Open-Meteo)
 python3 sample_lights_gibs.py         # provisional night-light proxy (no login needed)

@@ -142,5 +142,50 @@
       "lon": -104.35
     },
     "tz": "America/Denver"
+  },
+  "fl-i75": {
+    "name": "I-75 / US 441: Gainesville, Florida",
+    "state": "FL",
+    "routeNumbers": [
+      75,
+      441,
+      24
+    ],
+    "fSystems": [
+      1,
+      2,
+      3
+    ],
+    "bbox": [
+      -82.55,
+      29.55,
+      -82.2,
+      29.8
+    ],
+    "roosts": [
+      {
+        "name": "University of Florida Bat Houses, Lake Alice",
+        "lat": 29.6434,
+        "lon": -82.362,
+        "species": "TABR",
+        "est": 450000,
+        "note": "Largest occupied bat houses in the world, on the UF campus beside Lake Alice: an estimated 450,000 to 500,000 bats, mostly Brazilian free-tailed, with evening bats and southeastern myotis. They emerge at dusk every night and forage across the city, US 441 and I-75.",
+        "source": "https://www.floridamuseum.ufl.edu/mammals/outreach/public-engagement/"
+      },
+      {
+        "name": "Paynes Prairie Preserve, US 441 causeway",
+        "lat": 29.59,
+        "lon": -82.31,
+        "species": "NYHU",
+        "est": 0,
+        "note": "The US 441 causeway crosses the prairie wetlands where Gainesville's bats forage over open water; a long, lit road through prime feeding habitat.",
+        "source": "https://www.floridastateparks.org/parks-and-trails/paynes-prairie-preserve-state-park"
+      }
+    ],
+    "temperaturePoint": {
+      "lat": 29.65,
+      "lon": -82.35
+    },
+    "tz": "America/New_York"
   }
 }

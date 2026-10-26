@@ -6,8 +6,8 @@ export default function CorridorsIndex() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Deep-dive corridors</h1>
-      <p className="mt-2 max-w-3xl text-muted">Three places where the public data is dense enough to schedule lights segment by segment: FHWA traffic counts on every road piece, documented roosts, GBIF sightings, and local evening climate. The national map shows the pattern; these show the plan.</p>
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <p className="mt-2 max-w-3xl text-muted">Four places where the public data is dense enough to schedule lights segment by segment: FHWA traffic counts on every road piece, documented roosts, GBIF sightings, and local evening climate. The national map shows the pattern; these show the plan.</p>
+      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {CORRIDORS.map((c) => (
           <Link key={c.id} href={`/corridors/${c.id}`} className="panel block p-5 transition hover:border-accent/50">
             <div className="label">{c.state}</div>

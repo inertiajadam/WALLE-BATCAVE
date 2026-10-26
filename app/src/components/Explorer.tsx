@@ -10,6 +10,7 @@ import { fTemp, fMoon, fTime } from "@/lib/model";
 import { ACTIVITY, LIGHT, PRIORITY, TRAFFIC, cssRamp } from "@/lib/colors";
 import { Chip, Legend, Slider } from "@/components/ui";
 import type { MapMode, Layers } from "@/components/NationalMap";
+import MapKey from "@/components/MapKey";
 import { fmtInt, fmtPct, fmtTemp } from "@/lib/format";
 
 const NationalMap = dynamic(() => import("@/components/NationalMap"), { ssr: false, loading: () => <div className="flex h-full items-center justify-center text-muted">Loading map…</div> });
@@ -143,7 +144,8 @@ export default function Explorer() {
       </aside>
       <div className="order-1 relative min-h-[420px] lg:order-2">
         <NationalMap grid={grid} field={field} mode={mode} layers={layers} nightFactor={nightFactor} onHover={onHover} onClickCorridor={onClickCorridor} flyTo={flyTo} />
-        {!grid && <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-muted">Loading 74,000 grid cells…</div>}
+        {!grid && <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-muted">Loading 80,000 grid cells…</div>}
+        <div className="pointer-events-none absolute bottom-6 right-3 z-10 hidden sm:block"><MapKey mode={mode} layers={layers} calibrated={!!field?.calibrated} /></div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { loadGrid, type Grid } from "@/lib/grid";
 import { loadPhenology, type PhenologyFile, MONTHS, seasonalCurve } from "@/lib/phenology";
 import { loadRoads, loadGbif, loadClimate, type Corridor, type RoadsFile, type GbifFile, type ClimateFile } from "@/lib/corridors";
-import { buildSegments, corridorNight, annualSummary, segmentNight } from "@/lib/corridorModel";
+import { buildSegments, corridorNight, annualSummary, segmentNight, STATE_NAME } from "@/lib/corridorModel";
 import { DEFAULT_POLICY, DEFAULT_ENERGY, type DimmingPolicy, type EnergyAssumptions } from "@/lib/model";
 import { SPECIES_BY_CODE } from "@/lib/species";
 import { Chip, Section, Slider, Stat } from "@/components/ui";
@@ -15,7 +15,6 @@ import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact, fmtTemp, fmtMiles, fmtKm } 
 import { fmtTimeTz } from "@/lib/sun";
 
 const CorridorMap = dynamic(() => import("@/components/CorridorMap"), { ssr: false, loading: () => <div className="flex h-full items-center justify-center text-muted">Loading map…</div> });
-const STATE_NAME: Record<string, string> = { TX: "Texas", KY: "Kentucky", NM: "New Mexico" };
 
 export default function CorridorView({ corridor }: { corridor: Corridor }) {
   const [grid, setGrid] = useState<Grid | null>(null); const [ph, setPh] = useState<PhenologyFile | null>(null);

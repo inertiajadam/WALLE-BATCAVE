@@ -7,7 +7,7 @@ import json, math, os, sys, time, urllib.parse, urllib.request
 import numpy as np, shapefile
 from rasterio.warp import transform
 HERE = os.path.dirname(os.path.abspath(__file__)); RAW = os.path.join(HERE, "..", "data", "raw")
-SPECIES = {"TABR": 2433011, "LABO": 5218543, "MYSO": 2432418}
+SPECIES = {"TABR": 2433011, "LABO": 5218543, "MYSO": 2432418, "NYHU": 2432314, "MYAU": 2432451}
 
 def get(params):
     url = "https://api.gbif.org/v1/occurrence/search?" + urllib.parse.urlencode(params)

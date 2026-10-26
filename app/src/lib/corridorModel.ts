@@ -7,6 +7,8 @@ import { combine, MAX_WEIGHT } from "./national";
 import { nightSchedule, nightEnergy, DEFAULT_POLICY, DEFAULT_ENERGY, type DimmingPolicy, type EnergyAssumptions, type NightConditions, type HourResult, type NightEnergy } from "./model";
 import { nightWindow, midMonthDate, localHour } from "./sun";
 
+export const STATE_NAME: Record<string, string> = { TX: "Texas", KY: "Kentucky", NM: "New Mexico", FL: "Florida" };
+
 export interface Segment {
   idx: number; routeId: string; route: number; aadt: number; kFactor?: number; miles: number; center: [number, number];
   /** Baseline activity (0-1) for each month, from the nearest grid cell + roost proximity bonus. */
@@ -31,7 +33,7 @@ export function roostSigmaKm(colony: number): number { return 6 * (1 + Math.max(
 export function roostFactor(km: number, colony = 10000): number { return Math.exp(-0.5 * (km / roostSigmaKm(colony)) ** 2); }
 
 export function buildSegments(c: Corridor, roads: RoadsFile, g: Grid, ph: PhenologyFile, enabled?: Set<string>): Segment[] {
-  const state = c.state === "TX" ? "Texas" : c.state === "KY" ? "Kentucky" : c.state === "NM" ? "New Mexico" : undefined;
+  const state = STATE_NAME[c.state];
   const curves = new Map<string, number[]>();
   const curve = (code: string) => { let v = curves.get(code); if (!v) { v = seasonalCurve(ph, code, state); curves.set(code, v); } return v; };
   const cellCache = new Map<number, number[]>();

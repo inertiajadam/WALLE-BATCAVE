@@ -42,7 +42,7 @@ export default function UtilityDashboard() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Utility dashboard</h1>
-          <p className="mt-1 max-w-3xl text-sm text-muted">What a power company or roadway-lighting operator would see: projected savings from running a Black Corridor schedule on the three pilot corridors, tonight&apos;s setpoints, and the public notice that goes with them. The schedule endpoint at <code className="rounded bg-white/10 px-1">/api/schedule</code> simulates the feed a lighting controller would poll.</p>
+          <p className="mt-1 max-w-3xl text-sm text-muted">What a power company or roadway-lighting operator would see: projected savings from running a Black Corridor schedule on the four pilot corridors, tonight&apos;s setpoints, and the public notice that goes with them. The schedule endpoint at <code className="rounded bg-white/10 px-1">/api/schedule</code> simulates the feed a lighting controller would poll.</p>
         </div>
         <button onClick={() => setShowAssumptions(!showAssumptions)} className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-white/5">{showAssumptions ? "Hide" : "Edit"} assumptions</button>
       </div>
