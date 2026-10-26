@@ -58,7 +58,8 @@ export interface CellBaseline { bai: number; perSpecies: { code: string; value: 
 /** Layer 1 for one cell and month: weighted community presence (0-1) and the per-species breakdown. */
 export function cellBaseline(g: Grid, ph: PhenologyFile, i: number, month: number, enabled?: Set<string>, useWeights = true): CellBaseline {
   const state = g.states[g.state[i]];
-  let num = 0, den = 0, n = 0;
+  let num = 0, den = 0, n = 0, mx = 0;
+  const maxW = Math.max(...SPECIES.map((s) => s.weight));
   const per: { code: string; value: number }[] = [];
   for (const sp of SPECIES) {
     if (enabled && !enabled.has(sp.code)) continue;
@@ -67,11 +68,11 @@ export function cellBaseline(g: Grid, ph: PhenologyFile, i: number, month: numbe
     const season = seasonalCurve(ph, sp.code, state)[month];
     const v = spatial * season;
     const w = useWeights ? sp.weight : 1;
-    num += w * v; den += w; n++;
+    num += w * v; den += w; n++; mx = Math.max(mx, Math.min(1, v * (useWeights ? w / maxW : 1)));
     per.push({ code: sp.code, value: v });
   }
   per.sort((a, b) => b.value - a.value);
-  return { bai: den ? num / den : 0, perSpecies: per, nSpecies: n };
+  return { bai: den ? 0.7 * mx + 0.3 * (num / den) : 0, perSpecies: per, nSpecies: n };
 }
 
 /** Layer 2 applied to a baseline: 0-100 index for a specific hour of a specific night. */

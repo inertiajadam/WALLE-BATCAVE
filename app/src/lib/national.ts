@@ -5,6 +5,10 @@ import { SPECIES } from "./species";
 import { seasonalCurve, type PhenologyFile } from "./phenology";
 import { light01 } from "./model";
 
+export const MAX_WEIGHT = Math.max(...SPECIES.map((s) => s.weight));
+/** Community activity: the dominant species sets the level and the rest add to it. */
+export const combine = (max: number, mean: number) => 0.7 * max + 0.3 * mean;
+
 export interface NationalField { baseline: Float32Array; priority: Float32Array; light: Float32Array; calibrated: boolean }
 
 export function computeNational(g: Grid, ph: PhenologyFile, month: number, enabled: Set<string>, useWeights: boolean): NationalField {
@@ -14,7 +18,7 @@ export function computeNational(g: Grid, ph: PhenologyFile, month: number, enabl
   const active = SPECIES.filter((s) => enabled.has(s.code));
   for (let i = 0; i < g.n; i++) {
     const st = g.states[g.state[i]];
-    let num = 0, den = 0;
+    let num = 0, den = 0, mx = 0;
     for (const sp of active) {
       const spatial = cellSpeciesValue(g, i, sp.code);
       if (spatial === null) continue;
@@ -22,9 +26,10 @@ export function computeNational(g: Grid, ph: PhenologyFile, month: number, enabl
       let c = curves.get(key);
       if (!c) { c = seasonalCurve(ph, sp.code, st); curves.set(key, c); }
       const w = useWeights ? sp.weight : 1;
-      num += w * spatial * c[month]; den += w;
+      const v = spatial * c[month];
+      num += w * v; den += w; mx = Math.max(mx, Math.min(1, v * (useWeights ? w / MAX_WEIGHT : 1)));
     }
-    baseline[i] = den ? num / den : 0;
+    baseline[i] = den ? combine(mx, num / den) : 0;
     light[i] = light01(g.light[i], calibrated);
     priority[i] = g.interstateKm[i] > 0 ? baseline[i] * light[i] : 0;
   }

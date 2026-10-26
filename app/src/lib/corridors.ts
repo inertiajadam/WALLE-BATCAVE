@@ -3,7 +3,7 @@ import corridorsJson from "./corridors.json";
 export interface Roost { name: string; lat: number; lon: number; species: string; est: number; note: string; source: string }
 export interface Corridor {
   id: string; name: string; state: string; routeNumbers: number[]; fSystems: number[];
-  bbox: [number, number, number, number]; roosts: Roost[]; temperaturePoint: { lat: number; lon: number };
+  bbox: [number, number, number, number]; roosts: Roost[]; temperaturePoint: { lat: number; lon: number }; tz: string;
 }
 export const CORRIDORS: Corridor[] = Object.entries(corridorsJson).map(([id, c]) => ({ id, ...(c as Omit<Corridor, "id">) }));
 export const CORRIDOR_BY_ID: Record<string, Corridor> = Object.fromEntries(CORRIDORS.map((c) => [c.id, c]));

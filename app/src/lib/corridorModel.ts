@@ -3,8 +3,9 @@ import { CORRIDOR_BY_ID, featureCenter, featureMiles, distanceKm, type RoadsFile
 import { cellSpeciesValue, type Grid } from "./grid";
 import { seasonalCurve, type PhenologyFile, MONTH_DAYS } from "./phenology";
 import { SPECIES, SPECIES_BY_CODE } from "./species";
+import { combine, MAX_WEIGHT } from "./national";
 import { nightSchedule, nightEnergy, DEFAULT_POLICY, DEFAULT_ENERGY, type DimmingPolicy, type EnergyAssumptions, type NightConditions, type HourResult, type NightEnergy } from "./model";
-import { nightWindow, midMonthDate } from "./sun";
+import { nightWindow, midMonthDate, localHour } from "./sun";
 
 export interface Segment {
   idx: number; routeId: string; route: number; aadt: number; kFactor?: number; miles: number; center: [number, number];
@@ -24,8 +25,10 @@ function nearestCell(g: Grid, lon: number, lat: number, bbox: [number, number, n
   return best;
 }
 
-/** Roost influence: 1 at the roost, decaying to 0 by ~15 km (free-tailed bats commute much farther, but lights near the colony matter most). */
-export function roostFactor(km: number): number { return Math.exp(-0.5 * (km / 6) ** 2); }
+/** Roost influence: Gaussian in distance whose width grows with colony size, because large colonies
+ *  fan out farther each night (Bracken Cave free-tailed bats commute 50+ km). sigma = 6 km x (1 + log10(colony / 10,000)). */
+export function roostSigmaKm(colony: number): number { return 6 * (1 + Math.max(0, Math.log10(Math.max(colony, 10000) / 10000))); }
+export function roostFactor(km: number, colony = 10000): number { return Math.exp(-0.5 * (km / roostSigmaKm(colony)) ** 2); }
 
 export function buildSegments(c: Corridor, roads: RoadsFile, g: Grid, ph: PhenologyFile, enabled?: Set<string>): Segment[] {
   const state = c.state === "TX" ? "Texas" : c.state === "KY" ? "Kentucky" : c.state === "NM" ? "New Mexico" : undefined;
@@ -40,15 +43,15 @@ export function buildSegments(c: Corridor, roads: RoadsFile, g: Grid, ph: Phenol
     let base = cellCache.get(cell);
     if (!base) {
       base = new Array(12).fill(0);
-      let den = 0;
+      const mx = new Array(12).fill(0); let den = 0;
       for (const sp of SPECIES) {
         if (enabled && !enabled.has(sp.code)) continue;
         const v = cellSpeciesValue(g, cell, sp.code); if (v === null) continue;
         const cv = curve(sp.code);
-        for (let m = 0; m < 12; m++) base[m] += sp.weight * v * cv[m];
+        for (let m = 0; m < 12; m++) { base[m] += sp.weight * v * cv[m]; mx[m] = Math.max(mx[m], Math.min(1, v * cv[m] * sp.weight / MAX_WEIGHT)); }
         den += sp.weight;
       }
-      if (den) base = base.map((x) => x / den);
+      if (den) base = base.map((x, m) => combine(mx[m], x / den));
       cellCache.set(cell, base);
     }
     // roost proximity: blend toward the roost species' seasonal curve, scaled by colony size
@@ -57,7 +60,7 @@ export function buildSegments(c: Corridor, roads: RoadsFile, g: Grid, ph: Phenol
       const km = distanceKm(center[1], center[0], r.lat, r.lon);
       if (km < nearestRoostKm) { nearestRoostKm = km; roostName = r.name; }
       const size = Math.min(1, Math.log10(Math.max(r.est, 1000)) / 7); // 10^7 bats -> 1
-      const rf = roostFactor(km) * size;
+      const rf = roostFactor(km, r.est) * size;
       if (rf > 0.01 && (!enabled || enabled.has(r.species))) { const cv = curve(r.species); roostBoost = roostBoost.map((x, m) => Math.max(x, rf * cv[m])); }
     }
     const baseline = base.map((x, m) => Math.min(1, x + roostBoost[m] * (1 - x)));
@@ -77,7 +80,7 @@ export function corridorNight(c: Corridor, segs: Segment[], month: number, clima
   const miles = segs.reduce((a, s) => a + s.miles, 0);
   const meanBaseline = miles ? segs.reduce((a, s) => a + s.baseline[month] * s.miles, 0) / miles : 0;
   const aadt = miles ? segs.reduce((a, s) => a + s.aadt * s.miles, 0) / miles : 0;
-  const sunsetH = nw.sunset.getHours() + nw.sunset.getMinutes() / 60, sunriseH = nw.sunrise.getHours() + nw.sunrise.getMinutes() / 60;
+  const sunsetH = localHour(nw.sunset, c.tz), sunriseH = localHour(nw.sunrise, c.tz);
   const schedule = nightSchedule(meanBaseline, aadt, sunsetH, sunriseH, conditions, policy);
   return { month, date, sunset: nw.sunset, sunrise: nw.sunrise, conditions, schedule, energy: nightEnergy(schedule, miles, energy), miles, meanBaseline };
 }
@@ -85,7 +88,7 @@ export function corridorNight(c: Corridor, segs: Segment[], month: number, clima
 /** Schedule for one segment on a given night (used for the map coloring and the API). */
 export function segmentNight(c: Corridor, s: Segment, month: number, conditions: NightConditions, policy = DEFAULT_POLICY, date?: Date) {
   const nw = nightWindow(date ?? midMonthDate(month), s.center[1], s.center[0]);
-  const sunsetH = nw.sunset.getHours() + nw.sunset.getMinutes() / 60, sunriseH = nw.sunrise.getHours() + nw.sunrise.getMinutes() / 60;
+  const sunsetH = localHour(nw.sunset, c.tz), sunriseH = localHour(nw.sunrise, c.tz);
   return nightSchedule(s.baseline[month], s.aadt, sunsetH, sunriseH, conditions, policy, undefined, s.kFactor);
 }
 

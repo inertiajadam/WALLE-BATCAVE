@@ -10,7 +10,7 @@ import { Section, Stat } from "@/components/ui";
 import { PolicyControls, EnergyControls } from "@/components/AssumptionsPanel";
 import { MonthlyBars } from "@/components/charts";
 import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact } from "@/lib/format";
-import { fmtTime } from "@/lib/sun";
+import { fmtTimeTz } from "@/lib/sun";
 
 export default function UtilityDashboard() {
   const [grid, setGrid] = useState<Grid | null>(null); const [ph, setPh] = useState<PhenologyFile | null>(null); const [climate, setClimate] = useState<ClimateFile | null>(null);
@@ -72,7 +72,7 @@ export default function UtilityDashboard() {
                   <tr key={c.id} className="border-t border-line">
                     <td className="py-2 pr-3 font-medium">{c.name}</td><td className="stat pr-3">{fmtNum(annual.miles, 0)}</td><td className="stat pr-3">{fmtInt(aadt)}</td>
                     <td className="stat pr-3 text-ok">{fmtCompact(annual.kWh)}</td><td className="stat pr-3 text-accent">{fmtUSD(annual.dollars)}</td><td className="stat pr-3 text-bat">{fmtInt(annual.deepHours)}</td>
-                    <td className="pr-3 text-xs text-muted">sunset {fmtTime(tonight.sunset)} · dim {span(anyDim)}{deep.length ? ` · deep ${span(deep)}` : ""} · {tonight.conditions.tempC.toFixed(0)} °C · moon {fmtPct(tonight.conditions.moon)}</td>
+                    <td className="pr-3 text-xs text-muted">sunset {fmtTimeTz(tonight.sunset, c.tz)} · dim {span(anyDim)}{deep.length ? ` · deep ${span(deep)}` : ""} · {tonight.conditions.tempC.toFixed(0)} °C · moon {fmtPct(tonight.conditions.moon)}</td>
                     <td><Link className="text-accent-2" href={`/corridors/${c.id}`}>open</Link></td>
                   </tr>
                 );

@@ -8,7 +8,7 @@ import { buildSegments, corridorNight } from "@/lib/corridorModel";
 import { DEFAULT_POLICY, DEFAULT_ENERGY } from "@/lib/model";
 import { SPECIES_BY_CODE } from "@/lib/species";
 import { fmtInt, fmtPct, fmtUSD } from "@/lib/format";
-import { fmtTime } from "@/lib/sun";
+import { fmtTimeTz } from "@/lib/sun";
 
 interface Forecast { tempC: number; cloud: number; source: string }
 
@@ -70,7 +70,7 @@ export default function Tonight() {
               {status === "full" && <>Lights will stay at <span className="text-accent">normal brightness</span> tonight.</>}
             </div>
             <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
-              <div><div className="label">Sunset</div>{fmtTime(night.sunset)}</div>
+              <div><div className="label">Sunset</div>{fmtTimeTz(night.sunset, corridor.tz)}</div>
               <div><div className="label">Evening temp</div>{night.conditions.tempC.toFixed(0)} °C <span className="text-xs text-muted">{forecast ? "(forecast)" : "(climate)"}</span></div>
               <div><div className="label">Moon</div>{fmtPct(night.conditions.moon)} lit</div>
               <div><div className="label">Lowest output</div>{fmtPct(1 - Math.max(...dark.map((h) => h.dim), 0))}</div>
@@ -78,7 +78,7 @@ export default function Tonight() {
             <div className="mt-4 flex h-6 overflow-hidden rounded-md border border-line">
               {dark.map((h) => <div key={h.hour} title={`${hh(h.hour)}: ${fmtPct(1 - h.dim)} output, bat index ${Math.round(h.bai)}`} className="flex-1 border-r border-black/40 last:border-r-0" style={{ background: h.tier === "deep" ? "#5a3cc8" : h.tier === "moderate" ? "#c85ac8" : h.tier === "base" ? "#ffaa3c" : "#ffdc78" }} />)}
             </div>
-            <div className="mt-1 flex justify-between text-[11px] text-muted"><span>{fmtTime(night.sunset)}</span><span>{fmtTime(night.sunrise)}</span></div>
+            <div className="mt-1 flex justify-between text-[11px] text-muted"><span>{fmtTimeTz(night.sunset, corridor.tz)}</span><span>{fmtTimeTz(night.sunrise, corridor.tz)}</span></div>
           </>
         ) : <div className="mt-2 text-muted">Computing tonight&apos;s schedule…</div>}
       </div>

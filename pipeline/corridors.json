@@ -1,34 +1,146 @@
 {
   "tx-i35": {
     "name": "I-35: San Antonio to Austin, Texas",
-    "state": "TX", "routeNumbers": [35], "fSystems": [1],
-    "bbox": [-98.75, 29.25, -97.55, 30.65],
-    "roosts": [
-      {"name": "Bracken Cave Preserve", "lat": 29.6908, "lon": -98.3515, "species": "TABR", "est": 15000000, "note": "World's largest bat colony; Bat Conservation International preserve. Emergence March to October, peak July to September.", "source": "https://www.batcon.org/our-work/regions/usa-canada/protect-mega-populations/bracken-cave-preserve/"},
-      {"name": "Congress Avenue Bridge, Austin", "lat": 30.2617, "lon": -97.7452, "species": "TABR", "est": 1500000, "note": "Largest urban bat colony in North America. Present late March to early November.", "source": "https://tpwd.texas.gov/huntwild/wild/species/mexican-free-tailed-bat/"},
-      {"name": "McNeil Road overpass on I-35, Round Rock", "lat": 30.5225, "lon": -97.6940, "species": "TABR", "est": 1000000, "note": "A free-tailed colony living in the expansion joints of I-35 itself.", "source": "https://www.roundrocktexas.gov/city-departments/parks-and-recreation/bats/"},
-      {"name": "Camden Street Bridge, San Antonio", "lat": 29.4367, "lon": -98.4934, "species": "TABR", "est": 50000, "note": "Urban free-tailed colony over the San Antonio River.", "source": "https://www.sariverauthority.org/"}
+    "state": "TX",
+    "routeNumbers": [
+      35
     ],
-    "temperaturePoint": {"lat": 29.95, "lon": -98.05}
+    "fSystems": [
+      1
+    ],
+    "bbox": [
+      -98.75,
+      29.25,
+      -97.55,
+      30.65
+    ],
+    "roosts": [
+      {
+        "name": "Bracken Cave Preserve",
+        "lat": 29.6908,
+        "lon": -98.3515,
+        "species": "TABR",
+        "est": 15000000,
+        "note": "World's largest bat colony; Bat Conservation International preserve. Emergence March to October, peak July to September.",
+        "source": "https://www.batcon.org/our-work/regions/usa-canada/protect-mega-populations/bracken-cave-preserve/"
+      },
+      {
+        "name": "Congress Avenue Bridge, Austin",
+        "lat": 30.2617,
+        "lon": -97.7452,
+        "species": "TABR",
+        "est": 1500000,
+        "note": "Largest urban bat colony in North America. Present late March to early November.",
+        "source": "https://tpwd.texas.gov/huntwild/wild/species/mexican-free-tailed-bat/"
+      },
+      {
+        "name": "McNeil Road overpass on I-35, Round Rock",
+        "lat": 30.5225,
+        "lon": -97.694,
+        "species": "TABR",
+        "est": 1000000,
+        "note": "A free-tailed colony living in the expansion joints of I-35 itself.",
+        "source": "https://www.roundrocktexas.gov/city-departments/parks-and-recreation/bats/"
+      },
+      {
+        "name": "Camden Street Bridge, San Antonio",
+        "lat": 29.4367,
+        "lon": -98.4934,
+        "species": "TABR",
+        "est": 50000,
+        "note": "Urban free-tailed colony over the San Antonio River.",
+        "source": "https://www.sariverauthority.org/"
+      }
+    ],
+    "temperaturePoint": {
+      "lat": 29.95,
+      "lon": -98.05
+    },
+    "tz": "America/Chicago"
   },
   "ky-i65": {
     "name": "I-65: Louisville to Bowling Green, Kentucky",
-    "state": "KY", "routeNumbers": [65], "fSystems": [1],
-    "bbox": [-86.6, 36.9, -85.3, 38.35],
-    "roosts": [
-      {"name": "Mammoth Cave National Park", "lat": 37.1870, "lon": -86.1005, "species": "MYSO", "est": 300000, "note": "Historic hibernaculum for Indiana, gray, and little brown bats; a karst landscape bisected by I-65.", "source": "https://www.nps.gov/maca/learn/nature/bats.htm"},
-      {"name": "Hidden River Cave, Horse Cave", "lat": 37.1795, "lon": -85.9070, "species": "MYGR", "est": 150000, "note": "Gray bat maternity and bachelor colony beneath the town of Horse Cave, one mile from I-65.", "source": "https://hiddenrivercave.com/"},
-      {"name": "Bernheim Forest", "lat": 37.9170, "lon": -85.6650, "species": "MYSE", "est": 0, "note": "Forest block with documented Indiana and northern long-eared bat summer roosts next to I-65.", "source": "https://bernheim.org/"}
+    "state": "KY",
+    "routeNumbers": [
+      65
     ],
-    "temperaturePoint": {"lat": 37.6, "lon": -85.9}
+    "fSystems": [
+      1
+    ],
+    "bbox": [
+      -86.6,
+      36.9,
+      -85.3,
+      38.35
+    ],
+    "roosts": [
+      {
+        "name": "Mammoth Cave National Park",
+        "lat": 37.187,
+        "lon": -86.1005,
+        "species": "MYSO",
+        "est": 300000,
+        "note": "Historic hibernaculum for Indiana, gray, and little brown bats; a karst landscape bisected by I-65.",
+        "source": "https://www.nps.gov/maca/learn/nature/bats.htm"
+      },
+      {
+        "name": "Hidden River Cave, Horse Cave",
+        "lat": 37.1795,
+        "lon": -85.907,
+        "species": "MYGR",
+        "est": 150000,
+        "note": "Gray bat maternity and bachelor colony beneath the town of Horse Cave, one mile from I-65.",
+        "source": "https://hiddenrivercave.com/"
+      },
+      {
+        "name": "Bernheim Forest",
+        "lat": 37.917,
+        "lon": -85.665,
+        "species": "MYSE",
+        "est": 0,
+        "note": "Forest block with documented Indiana and northern long-eared bat summer roosts next to I-65.",
+        "source": "https://bernheim.org/"
+      }
+    ],
+    "temperaturePoint": {
+      "lat": 37.6,
+      "lon": -85.9
+    },
+    "tz": "America/Kentucky/Louisville"
   },
   "nm-us62": {
     "name": "US 62/180: Carlsbad to Carlsbad Caverns, New Mexico",
-    "state": "NM", "routeNumbers": [62, 180], "fSystems": [1, 2, 3],
-    "bbox": [-104.75, 32.05, -104.1, 32.5],
-    "roosts": [
-      {"name": "Carlsbad Caverns National Park", "lat": 32.1750, "lon": -104.4436, "species": "TABR", "est": 400000, "note": "Nightly bat flight program April to October; the park is an International Dark Sky Park.", "source": "https://www.nps.gov/cave/learn/nature/bats.htm"}
+    "state": "NM",
+    "routeNumbers": [
+      62,
+      180
     ],
-    "temperaturePoint": {"lat": 32.3, "lon": -104.35}
+    "fSystems": [
+      1,
+      2,
+      3
+    ],
+    "bbox": [
+      -104.75,
+      32.05,
+      -104.1,
+      32.5
+    ],
+    "roosts": [
+      {
+        "name": "Carlsbad Caverns National Park",
+        "lat": 32.175,
+        "lon": -104.4436,
+        "species": "TABR",
+        "est": 400000,
+        "note": "Nightly bat flight program April to October; the park is an International Dark Sky Park.",
+        "source": "https://www.nps.gov/cave/learn/nature/bats.htm"
+      }
+    ],
+    "temperaturePoint": {
+      "lat": 32.3,
+      "lon": -104.35
+    },
+    "tz": "America/Denver"
   }
 }

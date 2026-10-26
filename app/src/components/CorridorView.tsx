@@ -12,7 +12,7 @@ import { Chip, Section, Slider, Stat } from "@/components/ui";
 import { NightChart, MonthlyBars, PhenologyLines } from "@/components/charts";
 import { PolicyControls, EnergyControls } from "@/components/AssumptionsPanel";
 import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact } from "@/lib/format";
-import { fmtTime } from "@/lib/sun";
+import { fmtTimeTz } from "@/lib/sun";
 
 const CorridorMap = dynamic(() => import("@/components/CorridorMap"), { ssr: false, loading: () => <div className="flex h-full items-center justify-center text-muted">Loading map…</div> });
 const STATE_NAME: Record<string, string> = { TX: "Texas", KY: "Kentucky", NM: "New Mexico" };
@@ -79,7 +79,7 @@ export default function CorridorView({ corridor }: { corridor: Corridor }) {
         </div>
         {night && sel && (
           <div className="panel absolute bottom-3 left-3 right-3 p-3 xl:right-auto xl:w-[480px]">
-            <Slider label={`Night of ${MONTHS[month]} 15 · sunset ${fmtTime(night.sunset)} · sunrise ${fmtTime(night.sunrise)}`} value={Math.min(hourIdx, darkHours.length - 1)} min={0} max={Math.max(darkHours.length - 1, 0)} onChange={setHourIdx} format={(v) => { const h = darkHours[v]; return h ? `${((h.hour + 11) % 12) + 1}:00 ${h.hour < 12 ? "am" : "pm"}` : ""; }} />
+            <Slider label={`Night of ${MONTHS[month]} 15 · sunset ${fmtTimeTz(night.sunset, corridor.tz)} · sunrise ${fmtTimeTz(night.sunrise, corridor.tz)}`} value={Math.min(hourIdx, darkHours.length - 1)} min={0} max={Math.max(darkHours.length - 1, 0)} onChange={setHourIdx} format={(v) => { const h = darkHours[v]; return h ? `${((h.hour + 11) % 12) + 1}:00 ${h.hour < 12 ? "am" : "pm"}` : ""; }} />
             <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
               <span>Bat activity <b className="stat text-fg">{Math.round(sel.bai)}</b></span>
               <span>Traffic <b className="stat text-fg">{fmtPct(sel.trafficRatio)}</b> of peak</span>

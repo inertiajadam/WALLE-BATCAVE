@@ -2,6 +2,9 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
 import { MapboxOverlay } from "@deck.gl/mapbox";
+
+// Bundlers cannot always resolve MapLibre's module worker; serve it as a static file instead.
+if (typeof window !== "undefined") maplibregl.setWorkerUrl("/maplibre-gl-worker.mjs");
 import { GridCellLayer, GeoJsonLayer, ScatterplotLayer, TextLayer } from "@deck.gl/layers";
 import type { PickingInfo } from "@deck.gl/core";
 import type { Grid } from "@/lib/grid";

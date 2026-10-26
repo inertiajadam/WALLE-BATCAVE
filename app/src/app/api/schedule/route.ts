@@ -8,7 +8,7 @@
 import { NextResponse } from "next/server";
 import { CORRIDOR_BY_ID, CORRIDORS } from "@/lib/corridors";
 import { nightSchedule, DEFAULT_POLICY, DEFAULT_ENERGY, nightEnergy } from "@/lib/model";
-import { nightWindow } from "@/lib/sun";
+import { nightWindow, localHour } from "@/lib/sun";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -26,7 +26,7 @@ export async function GET(req: Request) {
   const tempC = Number(url.searchParams.get("temp") ?? climate.monthly[id][month] ?? 15);
   const nw = nightWindow(date, c.temperaturePoint.lat, c.temperaturePoint.lon);
   const moon = Number(url.searchParams.get("moon") ?? nw.moonIllumination);
-  const sunsetH = nw.sunset.getHours() + nw.sunset.getMinutes() / 60, sunriseH = nw.sunrise.getHours() + nw.sunrise.getMinutes() / 60;
+  const sunsetH = localHour(nw.sunset, c.tz), sunriseH = localHour(nw.sunrise, c.tz);
 
   // Server-side we do not load the 4 MB grid; the API uses the corridor's roost-season baseline as a conservative proxy.
   const seasonal = [0.15, 0.3, 0.55, 0.8, 0.9, 1, 1, 1, 0.95, 0.7, 0.35, 0.15][month];
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
   const corridorSched = nightSchedule(0.7 * seasonal, 90000, sunsetH, sunriseH, { tempC, moon }, DEFAULT_POLICY);
   const energy = nightEnergy(corridorSched, 60, DEFAULT_ENERGY);
   return NextResponse.json({
-    corridor: id, name: c.name, date: date.toISOString().slice(0, 10), sunset: nw.sunset.toISOString(), sunrise: nw.sunrise.toISOString(),
+    corridor: id, name: c.name, timezone: c.tz, date: date.toISOString().slice(0, 10), sunset: nw.sunset.toISOString(), sunrise: nw.sunrise.toISOString(), hours_are_local: true,
     conditions: { tempC, moonIllumination: moon }, policy: DEFAULT_POLICY, segments: setpoints.length, estimated_night_kwh_saved: Math.round(energy.kWhSaved), setpoints,
     disclaimer: "Prototype output for demonstration. Not connected to any utility control system.",
   });

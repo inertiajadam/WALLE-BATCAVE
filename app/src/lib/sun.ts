@@ -23,3 +23,13 @@ export function midMonthDate(month: number, year = new Date().getFullYear()): Da
 export function fmtTime(d: Date): string {
   return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
+
+/** Fractional local clock hour (0-24) of an instant in an IANA time zone. */
+export function localHour(d: Date, tz: string): number {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "numeric", hour12: false }).formatToParts(d);
+  const h = Number(parts.find((p) => p.type === "hour")?.value ?? 0) % 24, m = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+  return h + m / 60;
+}
+export function fmtTimeTz(d: Date, tz: string): string {
+  return d.toLocaleTimeString("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" });
+}
