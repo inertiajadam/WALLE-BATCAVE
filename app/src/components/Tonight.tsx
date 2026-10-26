@@ -7,7 +7,7 @@ import { loadRoads, loadClimate, CORRIDORS, distanceKm, type RoadsFile, type Cli
 import { buildSegments, corridorNight } from "@/lib/corridorModel";
 import { DEFAULT_POLICY, DEFAULT_ENERGY } from "@/lib/model";
 import { SPECIES_BY_CODE } from "@/lib/species";
-import { fmtInt, fmtPct, fmtUSD } from "@/lib/format";
+import { fmtInt, fmtPct, fmtUSD, fmtTemp, fmtKm } from "@/lib/format";
 import { fmtTimeTz } from "@/lib/sun";
 
 interface Forecast { tempC: number; cloud: number; source: string }
@@ -42,7 +42,7 @@ export default function Tonight() {
 
   const locate = () => navigator.geolocation?.getCurrentPosition((p) => {
     const best = CORRIDORS.map((c) => ({ c, d: distanceKm(p.coords.latitude, p.coords.longitude, (c.bbox[1] + c.bbox[3]) / 2, (c.bbox[0] + c.bbox[2]) / 2) })).sort((a, b) => a.d - b.d)[0];
-    setCid(best.c.id); setGeo(`Nearest pilot corridor is ${Math.round(best.d)} km away`);
+    setCid(best.c.id); setGeo(`Nearest pilot corridor is ${fmtKm(best.d, 0)} away`);
   }, () => setGeo("Location unavailable; pick a corridor below"));
 
   const dark = night?.schedule.filter((h) => h.dark) ?? []; const dim = dark.filter((h) => h.dim > 0); const deep = dark.filter((h) => h.tier === "deep");
@@ -71,7 +71,7 @@ export default function Tonight() {
             </div>
             <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
               <div><div className="label">Sunset</div>{fmtTimeTz(night.sunset, corridor.tz)}</div>
-              <div><div className="label">Evening temp</div>{night.conditions.tempC.toFixed(0)} °C <span className="text-xs text-muted">{forecast ? "(forecast)" : "(climate)"}</span></div>
+              <div><div className="label">Evening temp</div>{fmtTemp(night.conditions.tempC)} <span className="text-xs text-muted">{forecast ? "(forecast)" : "(climate)"}</span></div>
               <div><div className="label">Moon</div>{fmtPct(night.conditions.moon)} lit</div>
               <div><div className="label">Lowest output</div>{fmtPct(1 - Math.max(...dark.map((h) => h.dim), 0))}</div>
             </div>

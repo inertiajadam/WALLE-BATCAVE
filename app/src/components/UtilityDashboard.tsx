@@ -9,7 +9,7 @@ import { DEFAULT_POLICY, DEFAULT_ENERGY, type DimmingPolicy, type EnergyAssumpti
 import { Section, Stat } from "@/components/ui";
 import { PolicyControls, EnergyControls } from "@/components/AssumptionsPanel";
 import { MonthlyBars } from "@/components/charts";
-import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact } from "@/lib/format";
+import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact, fmtTemp, fmtMiles } from "@/lib/format";
 import { fmtTimeTz } from "@/lib/sun";
 
 export default function UtilityDashboard() {
@@ -53,26 +53,26 @@ export default function UtilityDashboard() {
         </div>
       )}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
-        <Stat label="Lit miles under schedule" value={fmtNum(total.miles, 0)} sub={`${rows.reduce((a, r) => a + r.segments, 0)} HPMS segments`} />
+        <Stat label="Lit road under schedule" value={fmtMiles(total.miles)} sub={`${rows.reduce((a, r) => a + r.segments, 0)} HPMS segments`} />
         <Stat label="Annual energy saved" value={`${fmtCompact(total.kWh)} kWh`} sub={total.base ? `${fmtPct(total.kWh / total.base)} of lighting load` : ""} accent="#4ade80" />
         <Stat label="Annual savings" value={fmtUSD(total.dollars)} sub={`$${energy.pricePerKWh.toFixed(3)}/kWh`} accent="#f5b342" />
-        <Stat label="CO₂ avoided" value={`${fmtCompact(total.co2 / 1000)} t / yr`} />
+        <Stat label="CO₂ avoided per year" value={`${fmtCompact(total.co2 / 1000)} t`} sub={`${fmtCompact(total.co2 * 2.20462)} lb`} />
         <Stat label="Bat-protected hours" value={fmtInt(total.deep)} sub="deep-dim hours per year" accent="#c084fc" />
       </div>
 
       <Section title="Pilot corridors">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-xs text-muted"><th className="py-1 pr-3">Corridor</th><th className="pr-3">Lit miles</th><th className="pr-3">Mean AADT</th><th className="pr-3">kWh / yr</th><th className="pr-3">$ / yr</th><th className="pr-3">Deep-dim h / yr</th><th className="pr-3">Tonight</th><th></th></tr></thead>
+            <thead><tr className="text-left text-xs text-muted"><th className="py-1 pr-3">Corridor</th><th className="pr-3">Lit mi / km</th><th className="pr-3">Mean AADT</th><th className="pr-3">kWh / yr</th><th className="pr-3">$ / yr</th><th className="pr-3">Deep-dim h / yr</th><th className="pr-3">Tonight</th><th></th></tr></thead>
             <tbody>
               {rows.map(({ c, annual, tonight, aadt }) => {
                 const dark = tonight.schedule.filter((h) => h.dark); const deep = dark.filter((h) => h.tier === "deep"); const anyDim = dark.filter((h) => h.dim > 0);
                 const span = (hs: typeof dark) => (hs.length ? `${((hs[0].hour + 11) % 12) + 1}${hs[0].hour < 12 ? "am" : "pm"}–${((hs[hs.length - 1].hour + 12) % 12) + 1}${hs[hs.length - 1].hour + 1 < 12 || hs[hs.length - 1].hour + 1 === 24 ? "am" : "pm"}` : "none");
                 return (
                   <tr key={c.id} className="border-t border-line">
-                    <td className="py-2 pr-3 font-medium">{c.name}</td><td className="stat pr-3">{fmtNum(annual.miles, 0)}</td><td className="stat pr-3">{fmtInt(aadt)}</td>
+                    <td className="py-2 pr-3 font-medium">{c.name}</td><td className="stat pr-3">{fmtNum(annual.miles, 0)} / {fmtNum(annual.miles * 1.609344, 0)}</td><td className="stat pr-3">{fmtInt(aadt)}</td>
                     <td className="stat pr-3 text-ok">{fmtCompact(annual.kWh)}</td><td className="stat pr-3 text-accent">{fmtUSD(annual.dollars)}</td><td className="stat pr-3 text-bat">{fmtInt(annual.deepHours)}</td>
-                    <td className="pr-3 text-xs text-muted">sunset {fmtTimeTz(tonight.sunset, c.tz)} · dim {span(anyDim)}{deep.length ? ` · deep ${span(deep)}` : ""} · {tonight.conditions.tempC.toFixed(0)} °C · moon {fmtPct(tonight.conditions.moon)}</td>
+                    <td className="pr-3 text-xs text-muted">sunset {fmtTimeTz(tonight.sunset, c.tz)} · dim {span(anyDim)}{deep.length ? ` · deep ${span(deep)}` : ""} · {fmtTemp(tonight.conditions.tempC)} · moon {fmtPct(tonight.conditions.moon)}</td>
                     <td><Link className="text-accent-2" href={`/corridors/${c.id}`}>open</Link></td>
                   </tr>
                 );

@@ -11,7 +11,7 @@ import { SPECIES_BY_CODE } from "@/lib/species";
 import { Chip, Section, Slider, Stat } from "@/components/ui";
 import { NightChart, MonthlyBars, PhenologyLines } from "@/components/charts";
 import { PolicyControls, EnergyControls } from "@/components/AssumptionsPanel";
-import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact } from "@/lib/format";
+import { fmtInt, fmtUSD, fmtPct, fmtNum, fmtCompact, fmtTemp, fmtMiles, fmtKm } from "@/lib/format";
 import { fmtTimeTz } from "@/lib/sun";
 
 const CorridorMap = dynamic(() => import("@/components/CorridorMap"), { ssr: false, loading: () => <div className="flex h-full items-center justify-center text-muted">Loading map…</div> });
@@ -69,9 +69,9 @@ export default function CorridorView({ corridor }: { corridor: Corridor }) {
               <div className="label">Segment · route {hovered.route}</div>
               <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
                 <span className="text-muted">AADT</span><b className="stat">{fmtInt(hovered.aadt)}</b>
-                <span className="text-muted">Length</span><b className="stat">{fmtNum(hovered.miles, 2)} mi</b>
+                <span className="text-muted">Length</span><b className="stat">{fmtMiles(hovered.miles, 2)}</b>
                 <span className="text-muted">Baseline activity ({MONTHS[month]})</span><b className="stat">{fmtPct(hovered.baseline[month])}</b>
-                <span className="text-muted">Nearest roost</span><b className="truncate">{hovered.roostName} · {fmtNum(hovered.nearestRoostKm, 1)} km</b>
+                <span className="text-muted">Nearest roost</span><b className="truncate">{hovered.roostName} · {fmtKm(hovered.nearestRoostKm)}</b>
                 <span className="text-muted">Output at {sel ? `${((sel.hour + 11) % 12) + 1}${sel.hour < 12 ? "am" : "pm"}` : "—"}</span><b className="stat">{dimByIdx ? fmtPct(1 - dimByIdx[hovered.idx]) : "—"}</b>
               </div>
             </div>
@@ -84,7 +84,7 @@ export default function CorridorView({ corridor }: { corridor: Corridor }) {
               <span>Bat activity <b className="stat text-fg">{Math.round(sel.bai)}</b></span>
               <span>Traffic <b className="stat text-fg">{fmtPct(sel.trafficRatio)}</b> of peak</span>
               <span>Lights at <b className="stat text-fg">{fmtPct(1 - sel.dim)}</b></span>
-              <span>Dimmed <b className="stat text-fg">{fmtNum(dimmedMiles, 0)}</b> of {fmtNum(night.miles, 0)} lit-miles</span>
+              <span>Dimmed <b className="stat text-fg">{fmtNum(dimmedMiles, 0)}</b> of {fmtMiles(night.miles)} lit</span>
             </div>
           </div>
         )}
@@ -94,9 +94,9 @@ export default function CorridorView({ corridor }: { corridor: Corridor }) {
         <Slider label="Month" value={month} min={0} max={11} onChange={(m) => { setMonth(m); setTempOverride(null); }} format={(v) => MONTHS[v]} />
         {annual && (
           <div className="grid grid-cols-2 gap-2">
-            <Stat label="Annual energy saved" value={`${fmtCompact(annual.kWh)} kWh`} sub={`${fmtPct(annual.kWh / annual.baselineKWh)} of lighting load · ${fmtNum(annual.miles, 0)} lit miles`} accent="#4ade80" />
+            <Stat label="Annual energy saved" value={`${fmtCompact(annual.kWh)} kWh`} sub={`${fmtPct(annual.kWh / annual.baselineKWh)} of lighting load · ${fmtMiles(annual.miles)} lit`} accent="#4ade80" />
             <Stat label="Annual savings" value={fmtUSD(annual.dollars)} sub={`at $${energy.pricePerKWh.toFixed(3)}/kWh`} accent="#f5b342" />
-            <Stat label="CO₂ avoided" value={`${fmtCompact(annual.co2Kg / 1000)} t`} sub="EPA eGRID factor" />
+            <Stat label="CO₂ avoided" value={`${fmtCompact(annual.co2Kg / 1000)} t`} sub={`${fmtCompact(annual.co2Kg * 2.20462)} lb · EPA eGRID factor`} />
             <Stat label="Bat-protected hours" value={fmtInt(annual.deepHours)} sub={`deep-dim hours per year · ${fmtInt(annual.dimHours)} total dimmed`} accent="#c084fc" />
           </div>
         )}
@@ -108,11 +108,11 @@ export default function CorridorView({ corridor }: { corridor: Corridor }) {
             <Section title={`Dimming schedule · ${MONTHS[month]}`}>
               <NightChart schedule={night.schedule} />
               <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
-                <div><div className="label">Evening temp</div><div className="stat">{night.conditions.tempC.toFixed(0)} °C</div></div>
+                <div><div className="label">Evening temp</div><div className="stat">{fmtTemp(night.conditions.tempC)}</div></div>
                 <div><div className="label">Moon</div><div className="stat">{fmtPct(night.conditions.moon)}</div></div>
                 <div><div className="label">Saved tonight</div><div className="stat">{fmtInt(night.energy.kWhSaved)} kWh · {fmtUSD(night.energy.dollars)}</div></div>
               </div>
-              <Slider label="Override evening temperature" value={tempOverride ?? night.conditions.tempC} min={-10} max={38} onChange={setTempOverride} format={(v) => `${v} °C`} hint="Default is the ERA5 mean at one hour after sunset for this month (Open-Meteo)" />
+              <Slider label="Override evening temperature" value={tempOverride ?? night.conditions.tempC} min={-10} max={38} onChange={setTempOverride} format={(v) => fmtTemp(v)} hint="Default is the ERA5 mean at one hour after sunset for this month (Open-Meteo)" />
             </Section>
             <Section title="Why these lights, why now">
               <ul className="space-y-1.5 text-sm text-muted">

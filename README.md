@@ -1,6 +1,6 @@
 # Black Corridor
 
-A prototype decision-support tool for **bat-aware adaptive highway lighting**. It stacks three national datasets on one 10 km grid, bats (USGS NABat and GBIF), light pollution (VIIRS night lights from the Earth Observation Group and NASA), and traffic (FHWA HPMS 2024), and runs a transparent two-layer model that predicts nightly bat activity, decides when highway lights can safely dim, and projects the energy, cost and CO₂ a utility would save.
+A prototype decision-support tool for **bat-aware adaptive highway lighting**. It stacks three national datasets on one 10 km (6 mi) grid, bats (USGS NABat and GBIF), light pollution (VIIRS night lights from the Earth Observation Group and NASA), and traffic (FHWA HPMS 2024), and runs a transparent two-layer model that predicts nightly bat activity, decides when highway lights can safely dim, and projects the energy, cost and CO₂ a utility would save.
 
 Student project. Nothing here connects to a real power grid; `/api/schedule` demonstrates the feed a lighting controller would consume.
 
@@ -13,6 +13,10 @@ Student project. Nothing here connects to a real power grid; `/api/schedule` dem
 | `/utility` | Utility dashboard: savings across pilots, tonight's setpoints, auto-generated public notice, simulated grid feed |
 | `/tonight` | Public page: what the lights near you will do tonight and why, with a live weather forecast |
 | `/methodology` | Model, formulas, limitations and full data provenance |
+
+## Units
+
+Every measurement in the app is shown in both metric and imperial (°C / °F, km / mi, t / lb). Energy is in kWh in both systems.
 
 ## The model
 

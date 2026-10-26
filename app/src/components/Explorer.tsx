@@ -10,7 +10,7 @@ import { fTemp, fMoon, fTime } from "@/lib/model";
 import { ACTIVITY, LIGHT, PRIORITY, TRAFFIC, cssRamp } from "@/lib/colors";
 import { Chip, Legend, Slider } from "@/components/ui";
 import type { MapMode, Layers } from "@/components/NationalMap";
-import { fmtInt, fmtPct } from "@/lib/format";
+import { fmtInt, fmtPct, fmtTemp } from "@/lib/format";
 
 const NationalMap = dynamic(() => import("@/components/NationalMap"), { ssr: false, loading: () => <div className="flex h-full items-center justify-center text-muted">Loading map…</div> });
 
@@ -54,7 +54,7 @@ export default function Explorer() {
     <div className="grid h-[calc(100vh-49px)] grid-cols-1 lg:grid-cols-[380px_1fr]">
       <aside className="order-2 overflow-y-auto border-r border-line p-4 lg:order-1">
         <h1 className="text-lg font-semibold">Where bats and highway lights collide</h1>
-        <p className="mt-1 text-sm text-muted">Every 10 km cell in the lower 48 states, scored from USGS bat monitoring, GBIF sightings, NASA/NOAA night lights, and FHWA traffic counts. Pick a month, pick a lens, hover a cell.</p>
+        <p className="mt-1 text-sm text-muted">Every 10 km (6 mi) cell in the lower 48 states, scored from USGS bat monitoring, GBIF sightings, NASA/NOAA night lights, and FHWA traffic counts. Pick a month, pick a lens, hover a cell.</p>
 
         <div className="mt-4 space-y-4">
           <div>
@@ -75,7 +75,7 @@ export default function Explorer() {
             {applyNight && (
               <div className="mt-2 space-y-2">
                 <Slider label="Hours after sunset" value={hour} min={0} max={10} step={0.5} onChange={setHour} format={(v) => `${v} h`} />
-                <Slider label="Evening temperature" value={tempC} min={-10} max={35} onChange={setTemp} format={(v) => `${v} °C`} hint="Default is a typical US evening for the month; corridor pages use local climate" />
+                <Slider label="Evening temperature" value={tempC} min={-10} max={35} onChange={setTemp} format={(v) => fmtTemp(v)} hint="Default is a typical US evening for the month; corridor pages use local climate" />
                 <Slider label="Moon illumination" value={moon} min={0} max={1} step={0.05} onChange={setMoon} format={(v) => fmtPct(v)} />
                 <div className="text-xs text-muted">Combined modifier: <b className="text-fg">{fmtPct(nightFactor)}</b> of baseline</div>
               </div>

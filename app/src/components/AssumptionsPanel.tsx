@@ -22,7 +22,7 @@ export function EnergyControls({ energy, onChange }: { energy: EnergyAssumptions
   const set = (k: keyof EnergyAssumptions) => (v: number) => onChange({ ...energy, [k]: v });
   return (
     <div className="space-y-3">
-      <Slider label="Fixtures per mile" value={energy.fixturesPerMile} min={10} max={100} onChange={set("fixturesPerMile")} hint="Continuous freeway lighting, both sides, ~50 m spacing ≈ 42 per mile" />
+      <Slider label="Fixtures per mile" value={energy.fixturesPerMile} min={10} max={100} onChange={set("fixturesPerMile")} format={(v) => `${v} / mi (${Math.round(v / 1.609344)} / km)`} hint="Continuous freeway lighting, both sides, ~50 m (165 ft) spacing ≈ 42 per mile (26 per km)" />
       <Slider label="Watts per fixture" value={energy.wattsPerFixture} min={60} max={400} step={10} onChange={set("wattsPerFixture")} hint="150 W LED cobra head; legacy 250 W HPS draws ~300 W with ballast" />
       <Slider label="Electricity price" value={energy.pricePerKWh} min={0.05} max={0.35} step={0.005} onChange={set("pricePerKWh")} format={(v) => `$${v.toFixed(3)}/kWh`} hint="EIA 2024 US commercial average: $0.1275/kWh" />
       <Slider label="Grid emission factor" value={energy.co2KgPerKWh} min={0.1} max={0.8} step={0.01} onChange={set("co2KgPerKWh")} format={(v) => `${v.toFixed(2)} kg CO₂/kWh`} hint="EPA eGRID US average ≈ 0.39" />
