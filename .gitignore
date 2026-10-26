@@ -1,0 +1,5 @@
+# raw downloads (hundreds of MB to GB); regenerate with pipeline/
+data/raw/
+# pipeline scratch
+pipeline/__pycache__/
+*.pyc

@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+:root {
+  --bg: #05070d;
+  --bg-2: #0b1020;
+  --panel: rgba(12, 17, 32, 0.86);
+  --line: rgba(148, 163, 184, 0.18);
+  --fg: #e6e9f2;
+  --muted: #94a3b8;
+  --accent: #f5b342;
+  --accent-2: #7dd3fc;
+  --bat: #c084fc;
+  --ok: #4ade80;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-panel: var(--panel);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-bat: var(--bat);
+  --color-ok: var(--ok);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html { color-scheme: dark; }
+body {
+  background: radial-gradient(1200px 600px at 70% -10%, #1a1f3a 0%, var(--bg) 55%);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; backdrop-filter: blur(10px); }
+.label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+input[type="range"] { accent-color: var(--accent); width: 100%; }
+.maplibregl-ctrl-attrib { font-size: 10px; background: rgba(5,7,13,0.7) !important; color: #94a3b8; }
+.maplibregl-ctrl-attrib a { color: #cbd5e1; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); font-size: 12px; color: var(--fg); background: rgba(255,255,255,0.03); cursor: pointer; }
+.chip[data-on="true"] { background: rgba(245,179,66,0.16); border-color: rgba(245,179,66,0.5); }
+.stat { font-variant-numeric: tabular-nums; }
+a.nav { color: var(--muted); padding: 6px 10px; border-radius: 8px; font-size: 14px; }
+a.nav:hover, a.nav[data-active="true"] { color: var(--fg); background: rgba(255,255,255,0.06); }
+.prose-dark p { color: #cbd5e1; line-height: 1.65; margin: 0.5rem 0; }
+.prose-dark h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem; }
+.prose-dark h3 { font-size: 1.05rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.35rem; }
+.prose-dark ul, .prose-dark ol { list-style: disc; padding-left: 1.25rem; color: #cbd5e1; }
+.prose-dark ol { list-style: decimal; }
+.prose-dark li { margin: 0.25rem 0; }
+.prose-dark code { font-family: var(--font-geist-mono), monospace; font-size: 0.85em; background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px; }
+.prose-dark a { color: var(--accent-2); text-decoration: underline; text-underline-offset: 2px; }
+.prose-dark table { width: 100%; font-size: 0.9rem; border-collapse: collapse; margin: 0.5rem 0; }
+.prose-dark th, .prose-dark td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
